@@ -4,7 +4,7 @@ Library.new({
 	sizeX = 770,
 	sizeY = 600,
 	title = "yo",
-	tabWidth = 200, -- (72 for icons only, didn't do a min check lol)
+	tabSizeX = 200, -- (72 for icons only)
 })
 
 -- Will add max width later
