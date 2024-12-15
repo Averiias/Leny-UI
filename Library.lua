@@ -143,7 +143,7 @@ function Library.new(options)
 		title = {Default = "Leny", ExpectedType = "string"},
 	})
 
-	Library.tabSizeX = options.tabSizeX
+	Library.tabSizeX = math.clamp(options.tabSizeX, 72, 200)
 	Library.sizeX = options.sizeX
 	Library.sizeY = options.sizeY
 
