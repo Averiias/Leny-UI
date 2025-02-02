@@ -1693,7 +1693,7 @@ Theme:registerToObjects({
 
 function Library:AutoLoadConfig()
 	if isfile(self.folderName .. "/autoload.txt") then
-		Library:loadConfig(readfile(Library.folderName .. "/autoload.txt"))
+		Library:LoadConfig(readfile(Library.folderName .. "/autoload.txt"))
 	end
 end
 
