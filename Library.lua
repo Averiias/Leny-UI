@@ -1692,13 +1692,13 @@ Theme:registerToObjects({
 })
 
 function Library:AutoLoadConfig()
-	if isfile(Library.folderName .. "/autoload.txt") then
+	if isfile(self.folderName .. "/autoload.txt") then
 		Library:loadConfig(readfile(Library.folderName .. "/autoload.txt"))
 	end
 end
 
 function Library:AutoLoadTheme()
-	if isfile(Library.folderName .. "/autoload.theme.txt") then
+	if isfile(self.folderName .. "/autoload.theme.txt") then
 		Library:LoadTheme(readfile(Library.folderName .. "/autoload.theme.txt"))
 	end
 end
