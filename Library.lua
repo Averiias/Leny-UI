@@ -1375,6 +1375,50 @@ function Library:notify(options: table)
 	})
 end
 
+function Library:LoadConfig(FileName)
+	local decoded = game:GetService("HttpService"):JSONDecode(readfile(options.folderName .. "/" .. FileName .. ".json"))
+
+	for elementType, elementData in pairs(shared.Flags) do
+		for elementName, _ in pairs(elementData) do
+			if elementType == "Dropdown" and decoded.Dropdown[elementName] and elementName ~= "Configs" then
+				shared.Flags.Dropdown[elementName]:updateList({list = decoded.Dropdown.list, default = decoded.Dropdown.value})
+			end
+
+			if elementType == "Toggle" and decoded.Toggle[elementName] then
+				shared.Flags.Toggle[elementName]:updateState({state = decoded.Toggle[elementName].state})
+			end
+
+			if elementType == "Slider" and decoded.Slider[elementName] then
+				shared.Flags.Slider[elementName]:updateValue({value = decoded.Slider[elementName].value})
+			end
+
+			if elementType == "Keybind" and decoded.Keybind[elementName] then
+				shared.Flags.Keybind[elementName]:updateKeybind({bind = decoded.Keybind[elementName].keybind})
+			end
+
+			if elementType == "TextBox" and decoded.TextBox[elementName] then
+				shared.Flags.TextBox[elementName]:updateText({text = decoded.TextBox[elementName].text})
+			end
+
+			if elementType == "ColorPicker" and decoded.ColorPicker[elementName] then
+				shared.Flags.ColorPicker[elementName]:updateColor({color = Color3.fromRGB(unpack(decoded.ColorPicker[elementName].color))})
+			end
+		end
+	end
+end
+
+function Library:LoadTheme(Theme)
+	local decoded = game:GetService("HttpService"):JSONDecode(readfile(Theme))
+
+	for elementType, elementData in pairs(shared.Flags) do
+		for elementName, _ in pairs(elementData) do
+			if elementType == "ColorPicker" and decoded.ColorPicker[elementName] then
+				shared.Flags.ColorPicker[elementName]:updateColor({color = Color3.fromRGB(unpack(decoded.ColorPicker[elementName].color))})
+			end
+		end
+	end
+end
+
 -- Save Manager, Theme Manager, UI settings | Messy ass hell, clean up later.
 function Library:createManager(options: table)
 	Utility:validateOptions(options, {
@@ -1544,49 +1588,14 @@ function Library:createManager(options: table)
 		Configs:updateList({list = jsons, default = {Configs:getValue()}})
 	end,})
 
-  local function loadConfig(FileName)
-		local decoded = game:GetService("HttpService"):JSONDecode(readfile(options.folderName .. "/" .. FileName .. ".json"))
-
-		for elementType, elementData in pairs(shared.Flags) do
-			for elementName, _ in pairs(elementData) do
-				if elementType == "Dropdown" and decoded.Dropdown[elementName] and elementName ~= "Configs" then
-					shared.Flags.Dropdown[elementName]:updateList({list = decoded.Dropdown.list, default = decoded.Dropdown.value})
-				end
-	
-				if elementType == "Toggle" and decoded.Toggle[elementName] then
-					shared.Flags.Toggle[elementName]:updateState({state = decoded.Toggle[elementName].state})
-				end
-	
-				if elementType == "Slider" and decoded.Slider[elementName] then
-					shared.Flags.Slider[elementName]:updateValue({value = decoded.Slider[elementName].value})
-				end
-	
-				if elementType == "Keybind" and decoded.Keybind[elementName] then
-					shared.Flags.Keybind[elementName]:updateKeybind({bind = decoded.Keybind[elementName].keybind})
-				end
-	
-				if elementType == "TextBox" and decoded.TextBox[elementName] then
-					shared.Flags.TextBox[elementName]:updateText({text = decoded.TextBox[elementName].text})
-				end
-
-				if elementType == "ColorPicker" and decoded.ColorPicker[elementName] then
-					shared.Flags.ColorPicker[elementName]:updateColor({color = Color3.fromRGB(unpack(decoded.ColorPicker[elementName].color))})
-				end
-			end
-		end
-  end
 
 	SaveManager:createButton({text = "Load Config", callback = function()
-    loadConfig(Configs:getValue())
+    	Library:LoadConfig(Configs:getValue())
 	end})
 
-  SaveManager:createButton({text = "Set as Auto Load", callback = function()
-    writefile(options.folderName .. "/autoload.txt", Configs:getValue())
-  end})
-
-  if isfile(options.folderName .. "/autoload.txt") then
-    loadConfig(readfile(options.folderName .. "/autoload.txt"))
-  end
+	SaveManager:createButton({text = "Set as Auto Load", callback = function()
+		writefile(options.folderName .. "/autoload.txt", Configs:getValue())
+	end})
 
 	local themeJsons = {}
 	for _, file in ipairs(listfiles(options.folderName .. "/Theme")) do
@@ -1650,29 +1659,15 @@ function Library:createManager(options: table)
 		ThemeConfigs:updateList({list = themeJsons, default = {ThemeConfigs:getValue()}})
 	end})
 
-	local function LoadTheme(Theme)
-		local decoded = game:GetService("HttpService"):JSONDecode(readfile(Theme))
 
-		for elementType, elementData in pairs(shared.Flags) do
-			for elementName, _ in pairs(elementData) do
-				if elementType == "ColorPicker" and decoded.ColorPicker[elementName] then
-					shared.Flags.ColorPicker[elementName]:updateColor({color = Color3.fromRGB(unpack(decoded.ColorPicker[elementName].color))})
-				end
-			end
-		end
-	end
 
 	ThemeManager:createButton({text = "Load Theme Config", callback = function()
-		LoadTheme(ThemeConfigs:getValue() .. ".json")
+		Library:LoadTheme(ThemeConfigs:getValue() .. ".json")
 	end})
 
 	ThemeManager:createButton({text = "Set as Auto Load", callback = function()
 		writefile(options.folderName .. "/autoload.theme.txt", ThemeConfigs:getValue() .. ".json")
 	end})
-
-	if isfile(options.folderName .. "/autoload.theme.txt") then
-		LoadTheme(readfile(options.folderName .. "/autoload.theme.txt"))
-	end
 end
 
 -- Set users theme choice or default theme when initiliazed, could make this cleaner lol, but nah.
@@ -1695,6 +1690,18 @@ Theme:registerToObjects({
 	{object = Title , property = "TextColor3", theme = {"PrimaryTextColor"}},
 	{object = Assets.Pages.Fade, property = "BackgroundColor3", theme = {"PrimaryBackgroundColor"}},
 })
+
+function Library:AutoLoadConfig()
+	if isfile(options.folderName .. "/autoload.txt") then
+		Library:loadConfig(readfile(options.folderName .. "/autoload.txt"))
+	end
+end
+
+function Library:AutoLoadTheme()
+	if isfile(options.folderName .. "/autoload.theme.txt") then
+		Library:LoadTheme(readfile(options.folderName .. "/autoload.theme.txt"))
+	end
+end
 
 -- Make UI Draggable and Resizable
 Utility:draggable(Library, Glow)
