@@ -1645,13 +1645,13 @@ function Library:createManager(options: table)
 		end
 
 		local encoded = game:GetService("HttpService"):JSONEncode(SavedData)
-		writefile(options.folderName .. "/" .. "Theme/" .. ThemeConfigs:getValue() .. ".json", encoded)
+		writefile(ThemeConfigs:getValue() .. ".json", encoded)
 		
 		ThemeConfigs:updateList({list = themeJsons, default = {ThemeConfigs:getValue()}})
 	end})
 
 	ThemeManager:createButton({text = "Load Theme Config", callback = function()
-		local decoded = game:GetService("HttpService"):JSONDecode(readfile(options.folderName .. "/" .. "Theme/" .. ThemeConfigs:getValue() .. ".json"))
+		local decoded = game:GetService("HttpService"):JSONDecode(readfile(ThemeConfigs:getValue() .. ".json"))
 
 		for elementType, elementData in pairs(shared.Flags) do
 			for elementName, _ in pairs(elementData) do
