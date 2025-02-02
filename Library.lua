@@ -1651,6 +1651,7 @@ function Library:createManager(options: table)
 	end})
 
 	ThemeManager:createButton({text = "Load Theme Config", callback = function()
+		warn (ThemeConfigs:getValue() .. ".json")
 		local decoded = game:GetService("HttpService"):JSONDecode(readfile(ThemeConfigs:getValue() .. ".json"))
 
 		for elementType, elementData in pairs(shared.Flags) do
