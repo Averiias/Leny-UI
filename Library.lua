@@ -1650,9 +1650,8 @@ function Library:createManager(options: table)
 		ThemeConfigs:updateList({list = themeJsons, default = {ThemeConfigs:getValue()}})
 	end})
 
-	ThemeManager:createButton({text = "Load Theme Config", callback = function()
-		warn (ThemeConfigs:getValue() .. ".json")
-		local decoded = game:GetService("HttpService"):JSONDecode(readfile(ThemeConfigs:getValue() .. ".json"))
+	local function LoadTheme(Theme)
+		local decoded = game:GetService("HttpService"):JSONDecode(readfile(Theme))
 
 		for elementType, elementData in pairs(shared.Flags) do
 			for elementName, _ in pairs(elementData) do
@@ -1661,7 +1660,19 @@ function Library:createManager(options: table)
 				end
 			end
 		end
+	end
+
+	ThemeManager:createButton({text = "Load Theme Config", callback = function()
+		LoadTheme(ThemeConfigs:getValue() .. ".json")
 	end})
+
+	ThemeManager:createButton({text = "Set as Auto Load", callback = function()
+		writefile(options.folderName .. "/autoload.theme.txt", ThemeConfigs:getValue() .. ".json")
+	end})
+
+	if isfile(options.folderName .. "/autoload.theme.txt") then
+		LoadTheme(readfile(options.folderName .. "/autoload.theme.txt"))
+	end
 end
 
 -- Set users theme choice or default theme when initiliazed, could make this cleaner lol, but nah.
