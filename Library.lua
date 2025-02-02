@@ -142,7 +142,7 @@ function Library.new(options)
 		tabSizeX = {Default = Library.tabSizeX, ExpectedType = "number"},
 		title = {Default = "Leny", ExpectedType = "string"},
 	})
-
+	Library.folderName = options.folderName
 	Library.tabSizeX = math.clamp(options.tabSizeX, 72, 200)
 	Library.sizeX = options.sizeX
 	Library.sizeY = options.sizeY
@@ -1376,7 +1376,7 @@ function Library:notify(options: table)
 end
 
 function Library:LoadConfig(FileName)
-	local decoded = game:GetService("HttpService"):JSONDecode(readfile(options.folderName .. "/" .. FileName .. ".json"))
+	local decoded = game:GetService("HttpService"):JSONDecode(readfile(Library.folderName .. "/" .. FileName .. ".json"))
 
 	for elementType, elementData in pairs(shared.Flags) do
 		for elementName, _ in pairs(elementData) do
@@ -1465,20 +1465,20 @@ function Library:createManager(options: table)
 	
 	UI:createButton({text = "Destroy UI", callback = function() Library:destroy() end})
 
-	if not isfolder(options.folderName) then
-		makefolder(options.folderName)
+	if not isfolder(Library.folderName) then
+		makefolder(Library.folderName)
 	end
 
-	if not isfolder(options.folderName .. "/Theme") then
-		makefolder(options.folderName .. "/Theme")
+	if not isfolder(Library.folderName .. "/Theme") then
+		makefolder(Library.folderName .. "/Theme")
 	end
 
 	local configName = SaveManager:createTextBox({text = "Config Name"})
 
 	local jsons = {}
-	for _, file in ipairs(listfiles(options.folderName)) do
+	for _, file in ipairs(listfiles(Library.folderName)) do
 		if not string.match(file, "Theme") and not string.match(file, "autoload") then
-			file = string.gsub(file, options.folderName .. "\\", "")
+			file = string.gsub(file, Library.folderName .. "\\", "")
 			file = string.gsub(file, ".json", "")
 			table.insert(jsons, file)
 		end
@@ -1525,12 +1525,12 @@ function Library:createManager(options: table)
 		end
 	
 		local encoded = game:GetService("HttpService"):JSONEncode(SavedData)
-		writefile(options.folderName .. "/" .. configName:getText() .. ".json", encoded)
+		writefile(Library.folderName .. "/" .. configName:getText() .. ".json", encoded)
 		
 		jsons = {}
-		for _, file in ipairs(listfiles(options.folderName)) do
+		for _, file in ipairs(listfiles(Library.folderName)) do
 			if not string.match(file, "Theme") and not string.match(file, "autoload") then
-				file = string.gsub(file, options.folderName .. "\\", "")
+				file = string.gsub(file, Library.folderName .. "\\", "")
 				file = string.gsub(file, ".json", "")
 				table.insert(jsons, file)
 			end
@@ -1583,7 +1583,7 @@ function Library:createManager(options: table)
 		end
 	
 		local encoded = game:GetService("HttpService"):JSONEncode(SavedData)
-		writefile(options.folderName .. "/" .. Configs:getValue() .. ".json", encoded)
+		writefile(Library.folderName .. "/" .. Configs:getValue() .. ".json", encoded)
 		
 		Configs:updateList({list = jsons, default = {Configs:getValue()}})
 	end,})
@@ -1594,12 +1594,12 @@ function Library:createManager(options: table)
 	end})
 
 	SaveManager:createButton({text = "Set as Auto Load", callback = function()
-		writefile(options.folderName .. "/autoload.txt", Configs:getValue())
+		writefile(Library.folderName .. "/autoload.txt", Configs:getValue())
 	end})
 
 	local themeJsons = {}
-	for _, file in ipairs(listfiles(options.folderName .. "/Theme")) do
-		file = string.gsub(file, options.folderName .. "/Theme" .. "\\", "")
+	for _, file in ipairs(listfiles(Library.folderName .. "/Theme")) do
+		file = string.gsub(file, Library.folderName .. "/Theme" .. "\\", "")
 		file = string.gsub(file, ".json", "")
 		table.insert(themeJsons, file)
 	end
@@ -1622,11 +1622,11 @@ function Library:createManager(options: table)
 		end
 
 		local encoded = game:GetService("HttpService"):JSONEncode(SavedData)
-		writefile(options.folderName .. "/" .. "Theme/" .. themeConfigName:getText() .. ".json", encoded)
+		writefile(Library.folderName .. "/" .. "Theme/" .. themeConfigName:getText() .. ".json", encoded)
 		
 		themeJsons = {}
-		for _, file in ipairs(listfiles(options.folderName .. "/Theme")) do
-			file = string.gsub(file, options.folderName .. "/Theme" .. "\\", "")
+		for _, file in ipairs(listfiles(Library.folderName .. "/Theme")) do
+			file = string.gsub(file, Library.folderName .. "/Theme" .. "\\", "")
 			file = string.gsub(file, ".json", "")
 			table.insert(themeJsons, file)
 		end
@@ -1666,7 +1666,7 @@ function Library:createManager(options: table)
 	end})
 
 	ThemeManager:createButton({text = "Set as Auto Load", callback = function()
-		writefile(options.folderName .. "/autoload.theme.txt", ThemeConfigs:getValue() .. ".json")
+		writefile(Library.folderName .. "/autoload.theme.txt", ThemeConfigs:getValue() .. ".json")
 	end})
 end
 
@@ -1692,14 +1692,14 @@ Theme:registerToObjects({
 })
 
 function Library:AutoLoadConfig()
-	if isfile(options.folderName .. "/autoload.txt") then
-		Library:loadConfig(readfile(options.folderName .. "/autoload.txt"))
+	if isfile(Library.folderName .. "/autoload.txt") then
+		Library:loadConfig(readfile(Library.folderName .. "/autoload.txt"))
 	end
 end
 
 function Library:AutoLoadTheme()
-	if isfile(options.folderName .. "/autoload.theme.txt") then
-		Library:LoadTheme(readfile(options.folderName .. "/autoload.theme.txt"))
+	if isfile(Library.folderName .. "/autoload.theme.txt") then
+		Library:LoadTheme(readfile(Library.folderName .. "/autoload.theme.txt"))
 	end
 end
 
