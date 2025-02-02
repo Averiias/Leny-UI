@@ -2,7 +2,7 @@ local Popup = {}
 Popup.__index = Popup
 
 local UserInputService = game:GetService("UserInputService")
-local Utility = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/L3nyFromV3rm/Leny-UI/refs/heads/main/Modules/Utility.lua", true))()
+local Utility = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Averiias/Leny-UI/refs/heads/main/Modules/Utility.lua", true))()
 
 function Popup.new(context: table)
 	local self = setmetatable(context, Popup)

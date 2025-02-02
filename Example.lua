@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/L3nyFromV3rm/Leny-UI/refs/heads/main/Library.lua", true))()
+local Library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Averiias/Leny-UI/refs/heads/main/Library.lua", true))()
 
 Library.new({
 	sizeX = 770,

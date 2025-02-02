@@ -1,8 +1,8 @@
 local Navigation = {}
 Navigation.__index = Navigation
 
-local Utility = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/L3nyFromV3rm/Leny-UI/refs/heads/main/Modules/Utility.lua", true))()
-local Popup = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/L3nyFromV3rm/Leny-UI/refs/heads/main/Modules/Popup.lua", true))()
+local Utility = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Averiias/Leny-UI/refs/heads/main/Modules/Utility.lua", true))()
+local Popup = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Averiias/Leny-UI/refs/heads/main/Modules/Popup.lua", true))()
 
 function Navigation.new(context: table)
 	local self = setmetatable(context, Navigation)
