@@ -1376,6 +1376,8 @@ function Library:notify(options: table)
 end
 
 function Library:LoadConfig(FileName)
+	if not isfile(Library.folderName .. "/" .. FileName .. ".json") then return end
+	
 	local decoded = game:GetService("HttpService"):JSONDecode(readfile(Library.folderName .. "/" .. FileName .. ".json"))
 
 	for elementType, elementData in pairs(shared.Flags) do
